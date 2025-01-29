@@ -10,139 +10,88 @@ const ThreeScene = () => {
         if (isMounted.current) return;
         isMounted.current = true;
 
-        // Scene setup
+        // יצירת סצנה
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x000000);
+        scene.background = new THREE.Color(0xffffff);
 
-        // Camera setup
+        // יצירת מצלמה
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 0, 300);
-        camera.lookAt(0, 0, 0);
+        camera.position.set(0, 350, 700); // הרחקת המצלמה כדי להכליל את כל האובייקטים
+        camera.lookAt(0, 200, 0); // מיקוד המצלמה במרכז הסידור
 
+        // יצירת רנדרר
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         mountRef.current.appendChild(renderer.domElement);
 
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+        // תאורה
+        const ambientLight = new THREE.AmbientLight(0xffffff, 3);
         scene.add(ambientLight);
-//test for shir
-        // FBX files and their desired positions
+
+        // טעינת מודלים
         const loader = new FBXLoader();
         const models = [];
-        const defaultRotations = new Map();
-        const hoverTexts = new Map();
         const filesWithPositions = [
-            { file: 'rut.fbx', position: { x: -30, y: 150, z: 0 }, text: 'This is Rut' },
-            { file: 'boaz.fbx', position: { x: 30, y: 150, z: 0 }, text: 'This is Boaz' },
-            { file: 'oved.fbx', position: { x: 0, y: 80, z: 0 }, text: 'This is Oved' },
-            { file: 'ishay.fbx', position: { x: 0, y: 15, z: 0 }, text: 'This is Ishay' },
-            { file: 'david.fbx', position: { x: -120, y: -50, z: 0 }, text: 'This is David' },
-            { file: 'batsheva.fbx', position: { x: -40, y: -50, z: 0 }, text: 'This is Batsheva' },
-            { file: 'michal.fbx', position: { x: 40, y: -50, z: 0 }, text: 'This is Michal' },
-            { file: 'achinoam.fbx', position: { x: 120, y: -50, z: 0 }, text: 'אני אחינועם היזראעלית' },
-            { file: 'shlomo.fbx', position: { x: -120, y: -120, z: 0 }, text: 'This is Shlomo' },
-            { file: 'avshalom.fbx', position: { x: -37, y: -120, z: 0 }, text: 'This is Avshalom' },
-            { file: 'amnon.fbx', position: { x: 37, y: -120, z: 0 }, text: 'This is Amnon' },
-            { file: 'tamar.fbx', position: { x: 120, y: -120, z: 0 }, text: 'This is Tamar' }
+            { file: 'boaz.fbx', position: { x: 150, y: 500, z: 0 } },
+            { file: 'rut.fbx', position: { x: -150, y: 500, z: 0 } },
+            { file: 'oved.fbx', position: { x: 0, y: 350, z: 0 } },
+            { file: 'ishay.fbx', position: { x: 0, y: 200, z: 0 } },
+            { file: 'david.fbx', position: { x: -400, y: 50, z: 0 } },
+            { file: 'achinoam.fbx', position: { x: -150, y: 50, z: 0 } },
+            { file: 'batsheva.fbx', position: { x: 150, y: 50, z: 0 } },
+            { file: 'michal.fbx', position: { x: 300, y: 50, z: 0 } },
+            { file: 'shlomo.fbx', position: { x: -300, y: -100, z: 0 } },
+            { file: 'avshalom.fbx', position: { x: -150, y: -100, z: 0 } },
+            { file: 'amnon.fbx', position: { x: 150, y: -100, z: 0 } },
+            { file: 'tamar.fbx', position: { x: 300, y: -100, z: 0 } }
         ];
 
-        filesWithPositions.forEach(({ file, position, text }) => {
+        filesWithPositions.forEach(({ file, position }) => {
             const filePath = require(`./../../models_amit/${file}`);
-            //const path = require(./3DModels/MHT.fbx);
-            console.log(`Loading ${file} from ${filePath}`);
-            try {
-                loader.load(
-                    filePath,
-                    (object) => {
-                        console.log(`Before traverse ${file}`);
-                        object.traverse((child) => {
-                            if (child.isMesh) {
-                                child.name = `${file.replace('.fbx', '')}_${child.name || 'Unnamed'}`;
-                            }
-                        });
-                        object.name = file.replace('.fbx', '');
-                        object.scale.set(0.25, 0.25, 0.25);
-                        object.position.set(position.x, position.y, position.z);
-
-                        defaultRotations.set(object, object.rotation.clone());
-                        hoverTexts.set(object.name, text);
-
-                        console.log(`Saved default rotation and text for: ${object.name}`);
-                        scene.add(object);
-                        models.push(object);
-                    },
-                    (progress) => {
-                        if (progress.total) {
-                            console.log(`Progress: ${(progress.loaded / progress.total) * 100}%`);
-                        } else {
-                            console.log(`Progress: ${progress.loaded} bytes loaded`);
-                        }
-                    },
-                    (error) => {
-                        console.error(`Error loading ${file}:`, error);
-                        console.error(`Error details: ${error.message}`);
-                    }
-                );
-            } catch (error) {
-                console.error(`Exception caught while loading ${file}:`, error);
-            }
+            loader.load(
+                filePath,
+                (object) => {
+                    object.scale.set(0.5, 0.5, 0.5); // הגדלת גודל האובייקטים
+                    object.position.set(position.x, position.y, position.z);
+                    scene.add(object);
+                    models.push(object);
+                },
+                undefined,
+                (error) => {
+                    console.error(`Error loading ${file}:`, error);
+                }
+            );
         });
 
-        // Raycaster setup
-        const raycaster = new THREE.Raycaster();
+        // מעקב אחרי תנועת העכבר
         const mouse = new THREE.Vector2();
-        const hoverTextDiv = document.getElementById('hoverText');
-
-        const onMouseMove = (event) => {
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-        };
-
-        window.addEventListener('mousemove', onMouseMove);
-
-        let lastHoveredObject = null;
+        const raycaster = new THREE.Raycaster();
         const mouseWorldPosition = new THREE.Vector3();
 
-        const checkIntersections = () => {
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(models.map((model) => model.children).flat(), true);
-
-            if (intersects.length > 0) {
-                const hoveredObject = intersects[0].object.parent || intersects[0].object;
-
-                if (hoveredObject !== lastHoveredObject) {
-                    lastHoveredObject = hoveredObject;
-
-                    const text = hoverTexts.get(hoveredObject.name) || 'No description available';
-                    hoverTextDiv.textContent = text;
-                    hoverTextDiv.style.display = 'block';
-                }
-            } else {
-                lastHoveredObject = null;
-                hoverTextDiv.style.display = 'none';
-            }
-
-            raycaster.setFromCamera(mouse, camera);
-            raycaster.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 0, -1), 100), mouseWorldPosition);
-
-            models.forEach((model) => {
-                if (model !== lastHoveredObject) {
-                    model.lookAt(mouseWorldPosition);
-                }
-            });
-        };
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
 
         const animate = () => {
             requestAnimationFrame(animate);
-            checkIntersections();
+
+            // הקרנת העכבר למישור במרחק 500 מהמצלמה
+            raycaster.setFromCamera(mouse, camera);
+            const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), -200);
+            raycaster.ray.intersectPlane(plane, mouseWorldPosition);
+
+            // עדכון סיבוב המודלים כך שיסתכלו על תנועות העכבר
+            models.forEach((model) => {
+                model.lookAt(mouseWorldPosition);
+            });
+
             renderer.render(scene, camera);
         };
 
         animate();
 
         return () => {
-            window.removeEventListener('mousemove', onMouseMove);
             if (mountRef.current) {
                 mountRef.current.removeChild(renderer.domElement);
             }
