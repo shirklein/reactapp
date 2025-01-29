@@ -48,42 +48,45 @@ const ThreeScene = () => {
         ];
 
         filesWithPositions.forEach(({ file, position, text }) => {
-            const fileaa = '/Users/shirklein/source/repos/my-new-react-app/models_amit/rut.fbx';
-            console.log(`Loading ${file} from ${fileaa}`);
-            const filePath = `/Users/shirklein/source/repos/my-new-react-app/models_amit/${file}`;
+            const filePath = require(`./../../models_amit/${file}`);
+            //const path = require(./3DModels/MHT.fbx);
             console.log(`Loading ${file} from ${filePath}`);
-            loader.load(
-                fileaa,
-                (object) => {
-                    console.log(`Before traverse ${file}`);
-                    object.traverse((child) => {
-                        if (child.isMesh) {
-                            child.name = `${file.replace('.fbx', '')}_${child.name || 'Unnamed'}`;
+            try {
+                loader.load(
+                    filePath,
+                    (object) => {
+                        console.log(`Before traverse ${file}`);
+                        object.traverse((child) => {
+                            if (child.isMesh) {
+                                child.name = `${file.replace('.fbx', '')}_${child.name || 'Unnamed'}`;
+                            }
+                        });
+                        object.name = file.replace('.fbx', '');
+                        object.scale.set(0.25, 0.25, 0.25);
+                        object.position.set(position.x, position.y, position.z);
+
+                        defaultRotations.set(object, object.rotation.clone());
+                        hoverTexts.set(object.name, text);
+
+                        console.log(`Saved default rotation and text for: ${object.name}`);
+                        scene.add(object);
+                        models.push(object);
+                    },
+                    (progress) => {
+                        if (progress.total) {
+                            console.log(`Progress: ${(progress.loaded / progress.total) * 100}%`);
+                        } else {
+                            console.log(`Progress: ${progress.loaded} bytes loaded`);
                         }
-                    });
-                    object.name = file.replace('.fbx', '');
-                    object.scale.set(0.25, 0.25, 0.25);
-                    object.position.set(position.x, position.y, position.z);
-
-                    defaultRotations.set(object, object.rotation.clone());
-                    hoverTexts.set(object.name, text);
-
-                    console.log(`Saved default rotation and text for: ${object.name}`);
-                    scene.add(object);
-                    models.push(object);
-                },
-                (progress) => {
-                    if (progress.total) {
-                        console.log(`Progress: ${(progress.loaded / progress.total) * 100}%`);
-                    } else {
-                        console.log(`Progress: ${progress.loaded} bytes loaded`);
+                    },
+                    (error) => {
+                        console.error(`Error loading ${file}:`, error);
+                        console.error(`Error details: ${error.message}`);
                     }
-                },
-                (error) => {
-                    console.error(`Error loading ${file}:`, error);
-                    console.error(`Error details: ${error.message}`);
-                }
-            );
+                );
+            } catch (error) {
+                console.error(`Exception caught while loading ${file}:`, error);
+            }
         });
 
         // Raycaster setup
