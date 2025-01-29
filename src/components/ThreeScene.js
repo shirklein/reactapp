@@ -26,7 +26,7 @@ const ThreeScene = () => {
         // Lighting
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
         scene.add(ambientLight);
-
+//test for shir
         // FBX files and their desired positions
         const loader = new FBXLoader();
         const models = [];
