@@ -25,6 +25,12 @@ const ThreeScene = () => {
         renderer.setSize(window.innerWidth, window.innerHeight);
         mountRef.current.appendChild(renderer.domElement);
 
+        // טעינת גופן
+        const link = document.createElement('link');
+        link.href = 'https://fonts.googleapis.com/css2?family=David+Libre:wght@400;500;700&display=swap';
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
+
         // תאורה
         const ambientLight = new THREE.AmbientLight(0xffffff, 3);
         scene.add(ambientLight);
@@ -33,24 +39,34 @@ const ThreeScene = () => {
         const loader = new FBXLoader();
         const models = [];
         const objectNames = {
-            'david.fbx': 'דוד המלך היה המלך השני של עם ישראל לפני כ-3000 שנה',
-            'boaz.fbx': 'בעז היה סבו של דוד המלך',
             'rut.fbx': 'רות המואביה הייתה אשתו של בעז ואימו של עובד',
-            'ishay.fbx': 'ישי היה אביו של דוד המלך',
-            'achinoam.fbx': 'אחינועם הייתה אחת מנשות דוד',
-            'amnon.fbx': 'אמנון היה בנו של דוד',
-            'avshalom.fbx': 'אבשלום היה בנו של דוד',
-            'batsheva.fbx': 'בת שבע הייתה אשתו של דוד ואמו של שלמה',
-            'michal.fbx': 'מיכל הייתה בת שאול ואשתו של דוד',
+            'boaz.fbx': 'בעז היה סבו של דוד המלך',
             'oved.fbx': 'עובד היה בנם של רות ובעז',
+            'ishay.fbx': 'ישי היה אביו של דוד המלך',
+            'david.fbx': 'דוד המלך היה המלך השני של עם ישראל לפני כ-3000 שנה',
+            'michal.fbx': 'מיכל הייתה בת שאול ואשתו של דוד',
+            'achinoam.fbx': 'אחינועם הייתה אחת מנשות דוד',
+            'batsheva.fbx': 'בת שבע הייתה אשתו של דוד ואמו של שלמה',
             'shlomo.fbx': 'שלמה היה בנו של דוד ומלך ישראל',
+            'avshalom.fbx': 'אבשלום היה בנו של דוד',
+            'amnon.fbx': 'אמנון היה בנו של דוד',
             'tamar.fbx': 'תמר הייתה בתו של דוד המלך'
         };
 
-        const filesWithPositions = Object.keys(objectNames).map((file, index) => ({
-            file,
-            position: { x: (index % 4) * 200 - 400, y: Math.floor(index / 4) * -200 + 500, z: 0 }
-        }));
+        const filesWithPositions = [
+            { file: 'rut.fbx', position: { x: -100, y: 600, z: 0 } },
+            { file: 'boaz.fbx', position: { x: 100, y: 600, z: 0 } },
+            { file: 'oved.fbx', position: { x: 0, y: 400, z: 0 } },
+            { file: 'ishay.fbx', position: { x: 0, y: 200, z: 0 } },
+            { file: 'david.fbx', position: { x: -200, y: 0, z: 0 } },
+            { file: 'michal.fbx', position: { x: 0, y: 0, z: 0 } },
+            { file: 'achinoam.fbx', position: { x: 200, y: 0, z: 0 } },
+            { file: 'batsheva.fbx', position: { x: 400, y: 0, z: 0 } },
+            { file: 'shlomo.fbx', position: { x: -300, y: -200, z: 0 } },
+            { file: 'avshalom.fbx', position: { x: -100, y: -200, z: 0 } },
+            { file: 'amnon.fbx', position: { x: 100, y: -200, z: 0 } },
+            { file: 'tamar.fbx', position: { x: 300, y: -200, z: 0 } }
+        ];
 
         filesWithPositions.forEach(({ file, position }) => {
             const filePath = require(`./../../models_amit/${file}`);
@@ -74,7 +90,6 @@ const ThreeScene = () => {
             );
         });
 
-        // מעקב אחרי תנועת העכבר
         const mouse = new THREE.Vector2();
         const raycaster = new THREE.Raycaster();
         const mouseWorldPosition = new THREE.Vector3();
@@ -122,7 +137,9 @@ const ThreeScene = () => {
                     backgroundColor: 'rgba(0, 0, 0, 0.7)',
                     color: 'white',
                     padding: '10px',
-                    borderRadius: '5px'
+                    borderRadius: '5px',
+                    fontFamily: 'David Libre, serif',
+                    fontSize: '3rem'
                 }}>
                     {hoveredObject}
                 </div>
