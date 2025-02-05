@@ -6,6 +6,7 @@ const ThreeScene = () => {
     const mountRef = useRef(null);
     const isMounted = useRef(false);
     const [hoveredObject, setHoveredObject] = useState(null);
+    const nameDivs = [];
 
     useEffect(() => {
         if (isMounted.current) return;
@@ -54,21 +55,21 @@ const ThreeScene = () => {
         };
 
         const filesWithPositions = [
-            { file: 'rut.fbx', position: { x: -100, y: 600, z: 0 } },
-            { file: 'boaz.fbx', position: { x: 100, y: 600, z: 0 } },
-            { file: 'oved.fbx', position: { x: 0, y: 400, z: 0 } },
-            { file: 'ishay.fbx', position: { x: 0, y: 200, z: 0 } },
-            { file: 'david.fbx', position: { x: -200, y: 0, z: 0 } },
-            { file: 'michal.fbx', position: { x: 0, y: 0, z: 0 } },
-            { file: 'achinoam.fbx', position: { x: 200, y: 0, z: 0 } },
-            { file: 'batsheva.fbx', position: { x: 400, y: 0, z: 0 } },
-            { file: 'shlomo.fbx', position: { x: -300, y: -200, z: 0 } },
-            { file: 'avshalom.fbx', position: { x: -100, y: -200, z: 0 } },
-            { file: 'amnon.fbx', position: { x: 100, y: -200, z: 0 } },
-            { file: 'tamar.fbx', position: { x: 300, y: -200, z: 0 } }
+            { file: 'rut.fbx', position: { x: -100, y: 600, z: 0 } , name: 'רות', hover: 'רות המואביה הייתה אשתו של בעז ואימו של עובד'},
+            { file: 'boaz.fbx', position: { x: 100, y: 600, z: 0 } , name: 'בעז', hover: 'בעז היה סבו של דוד המלך'},
+            { file: 'oved.fbx', position: { x: 0, y: 400, z: 0 } , name: 'עובד', hover: 'עובד היה בנם של רות ובעז'},
+            { file: 'ishay.fbx', position: { x: 0, y: 200, z: 0 } , name: 'ישי', hover: 'ישי היה אביו של דוד המלך'},
+            { file: 'david.fbx', position: { x: -200, y: 0, z: 0 } ,name: 'דוד', hover: 'דוד המלך היה המלך השני של עם ישראל לפני כ-3000 שנה'},
+            { file: 'michal.fbx', position: { x: 0, y: 0, z: 0 } , name: 'מיכל',  hover: 'מיכל הייתה בת שאול ואשתו של דוד'},
+            { file: 'achinoam.fbx', position: { x: 200, y: 0, z: 0 }, name: 'אחינועם היזרעאלית', hover: 'אחינועם הייתה אחת מנשות דוד'},
+            { file: 'batsheva.fbx', position: { x: 400, y: 0, z: 0 }, name: 'בת־שבע', hover: 'בת שבע הייתה אשתו של דוד ואמו של שלמה'},
+            { file: 'shlomo.fbx', position: { x: -300, y: -200, z: 0 }, name: 'שלמה', hover: 'שלמה היה בנו של דוד ומלך ישראל'},
+            { file: 'avshalom.fbx', position: { x: -100, y: -200, z: 0 }, name: 'אבשלום', hover: 'אבשלום היה בנו של דוד'},
+            { file: 'amnon.fbx', position: { x: 100, y: -200, z: 0 }, name: 'אמנון', hover: 'אמנון היה בנו של דוד'},
+            { file: 'tamar.fbx', position: { x: 300, y: -200, z: 0 },   name: 'תמר', hover: 'תמר הייתה בתו של דוד המלך'}
         ];
 
-        filesWithPositions.forEach(({ file, position }) => {
+        filesWithPositions.forEach(({ file, position, name, hover }) => {
             const filePath = require(`./../../models_amit/${file}`);
             loader.load(
                 filePath,
@@ -77,9 +78,20 @@ const ThreeScene = () => {
                     object.position.set(position.x, position.y, position.z);
                     object.traverse(child => {
                         if (child.isMesh) {
-                            child.userData.name = objectNames[file];
+                            child.userData.name = name;
+                            child.userData.hover = hover;
                         }
                     });
+                    //div names for the models
+                    console.log('name:', name, 'position:', position);
+                    const div = document.createElement('div');
+                    div.style.position = 'absolute';
+                    div.style.color = 'black';
+                    div.style.fontFamily = 'David Libre, serif';
+                    div.style.fontSize = '2.5rem';
+                    div.innerHTML = name;
+                    mountRef.current.appendChild(div);
+                    nameDivs.push({ div, object });
                     scene.add(object);
                     models.push(object);
                 },
@@ -105,7 +117,7 @@ const ThreeScene = () => {
             const intersects = raycaster.intersectObjects(models, true);
             
             if (intersects.length > 0) {
-                setHoveredObject(intersects[0].object.userData.name || null);
+                setHoveredObject(intersects[0].object.userData.hover || null);
             } else {
                 setHoveredObject(null);
             }
@@ -116,6 +128,23 @@ const ThreeScene = () => {
             });
             
             renderer.render(scene, camera);
+            updateNameDivs();
+        };
+
+        const updateNameDivs = () => {
+            nameDivs.forEach(({ div, object }) => {
+                const vector = new THREE.Vector3();
+                object.updateMatrixWorld();
+                vector.setFromMatrixPosition(object.matrixWorld);
+                vector.project(camera);
+
+                const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
+                const y = (vector.y * -0.5 + 0.5) * window.innerHeight;
+
+                // Adjust the y coordinate to move the div closer to the object
+                const yOffset = -1700; // Adjust this value as needed
+                div.style.transform = `translate(-50%, -50%) translate(${x}px, ${y + yOffset}px)`;
+            });
         };
 
         animate();
@@ -124,11 +153,14 @@ const ThreeScene = () => {
             if (mountRef.current) {
                 mountRef.current.removeChild(renderer.domElement);
             }
+            nameDivs.forEach(({ div }) => {
+                mountRef.current.removeChild(div);
+            });
         };
     }, []);
 
     return (
-        <div ref={mountRef}>
+        <div id="Shirdiv" ref={mountRef}>
             {hoveredObject && (
                 <div style={{
                     position: 'absolute',
