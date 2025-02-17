@@ -57,14 +57,14 @@ const ThreeScene = () => {
     const filesWithPositions = [
       // ... your existing objects with positions, etc.
       { file: 'rut.fbx', position: { x: -100, y: 500, z: 0 }, name: 'רות', hover: '...' },
-      { file: 'boaz.fbx', position: { x: 100, y: 500, z: 0 }, name: 'בעז', hover: '...' },
-      { file: 'oved.fbx', position: { x: 0, y: 350, z: 0 }, name: 'עובד', hover: '...' },
-      { file: 'ishay.fbx', position: { x: 0, y: 170, z: 0 }, name: 'ישי', hover: '...' },
-      { file: 'david.fbx', position: { x: 0, y: 0, z: 0 }, name: 'דוד', hover: '...' },
-      { file: 'michal.fbx', position: { x: -200, y: 0, z: 0 }, name: 'מיכל', hover: '...' },
-      { file: 'achinoam.fbx', position: { x: 200, y: 0, z: 0 }, name: 'אחינועם היזרעאלית', hover: '...' },
-      { file: 'batsheva.fbx', position: { x: 400, y: 0, z: 0 }, name: 'בת־שבע', hover: '...' },
-      { file: 'shlomo.fbx', position: { x: 0, y: -200, z: 0 }, name: 'שלמה', hover: '...' }
+      { file: 'boaz.fbx', position: { x: 100, y: 500, z: 0 }, name: 'בעז', hover: '״וַיִּקַּח בֹּעַז אֶת רוּת וַתְּהִי לוֹ לְאִשָּׁה״' },
+      { file: 'oved.fbx', position: { x: 0, y: 350, z: 0 }, name: 'עובד', hover: '״וּבֹעַז הוֹלִיד אֶת-עוֹבֵד״' },
+      { file: 'ishay.fbx', position: { x: 0, y: 170, z: 0 }, name: 'ישי', hover: '״וְעֹבֵד הוֹלִיד אֶת-יִשָׁי״' },
+      { file: 'david.fbx', position: { x: 0, y: 0, z: 0 }, name: 'דוד', hover: '״ וְיִשַׁי הוֹלִיד אֶת-דָּוִד...וְהוּא אַדְמוֹנִי עִם-יְפֵה עֵינַיִם וְטוֹב רֹאִי״' },
+      { file: 'michal.fbx', position: { x: -200, y: 0, z: 0 }, name: 'מיכל', hover: '״וַתֵּרֶא מִיכַל בַּת-שָׁאוּל אֶת-הַמֶּלֶךְ דָּוִד מְפַזֵּז וּמְכַרְכֵּר לִפְנֵי ה׳״' },
+      { file: 'achinoam.fbx', position: { x: 200, y: 0, z: 0 }, name: 'אחינועם היזרעאלית', hover: '״וַיִּקַּח דָּוִד גַּם אֶת-אֲחִינֹעַם מִיִּזְרְעֶאל״' },
+      { file: 'batsheva.fbx', position: { x: 400, y: 0, z: 0 }, name: 'בת־שבע', hover: '״וַיְהִי לְעֵת הָעֶרֶב, וַיָּקָם דָּוִד מֵעַל מִשְׁכָּבוֹ וַיִּתְהַלֵּךְ עַל-גַּג בֵּית-הַמֶּלֶךְ, וַיַּרְא אִשָּׁה רֹחֶצֶת מֵעַל הַגָּג, וְהָאִשָּׁה, טוֹבַת מַרְאֶה מְאֹד״' },
+      { file: 'shlomo.fbx', position: { x: 0, y: -200, z: 0 }, name: 'שלמה', hover: '״וַיִּתֵּן אֱלֹהִים חָכְמָה לִשְׁלֹמֹה וּתְבוּנָה הַרְבֵּה מְאֹד וְרֹחַב לֵב כַּחוֹל אֲשֶׁר עַל שְׂפַת הַיָּם״' }
     ];
 
     // Load models and create name divs
